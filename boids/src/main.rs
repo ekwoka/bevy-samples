@@ -15,10 +15,12 @@ use bevy::prelude::{
     Input,
     KeyCode,
     Quat,
+    Without,
 };
 use bevy::sprite::SpriteBundle;
 use bevy::time::{ Time, Timer, TimerMode };
 use bevy::window::{ Window, PrimaryWindow };
+use rand::prelude::random;
 
 fn main() {
     App::new().add_plugins(DefaultPlugins).add_plugin(Boids).run();
@@ -65,6 +67,60 @@ fn setup_env(
         ..Default::default()
     });
 }
+const BOID_COUNT: u8 = 10;
+
+fn spawn_boids(
+    mut commands: Commands,
+    window_query: Query<&Window, With<PrimaryWindow>>,
+    asset_server: Res<AssetServer>
+) {
+    let window = window_query.get_single().unwrap();
+    for _ in 0..BOID_COUNT {
+        let size = rand::random::<f32>() * 0.1 + 0.2;
+        commands.spawn((
+            SpriteBundle {
+                transform: Transform::from_xyz(
+                    random::<f32>() * window.width(),
+                    random::<f32>() * window.height(),
+                    0.0
+                ).with_scale([size, size, 1.0].into()),
+                texture: asset_server.load("sprites/kenney_simple-space/PNG/Retina/ship_B.png"),
+                ..Default::default()
+            },
+            Vector {
+                direction: rand::random::<f32>() * 360.0,
+                velocity: 100.0,
+            },
+        ));
+    }
+}
+
+const BOID_VISION_ARC: f32 = 150.0;
+const BOID_VISION_DISTANCE: f32 = 100.0;
+
+fn boid_attraction(
+    mut boid_query: Query<(&mut Vector, &Transform), Without<Player>>,
+    other_query: Query<&Transform, Without<Player>>,
+    time: Res<Time>
+) {
+    for (mut vector, transform) in boid_query.iter_mut() {
+        let mut direction = 0.0;
+        for other_transform in other_query.iter() {
+            if transform != other_transform {
+                let distance = other_transform.translation.distance(transform.translation);
+                if distance < BOID_VISION_DISTANCE {
+                    let angle =
+                        other_transform.translation.angle_between(-transform.translation) % 360.0;
+                    if angle.abs() < BOID_VISION_ARC {
+                        direction -=
+                            (angle / angle.abs()) * 5.0 * (distance / BOID_VISION_DISTANCE);
+                    }
+                }
+            }
+        }
+        vector.direction += direction * time.delta_seconds();
+    }
+}
 
 fn check_player(
     time: Res<Time>,
@@ -86,10 +142,12 @@ impl Plugin for Boids {
     fn build(&self, app: &mut App) {
         app.insert_resource(CheckTimer(Timer::from_seconds(2.0, TimerMode::Repeating)))
             .add_startup_system(setup_env)
+            .add_startup_system(spawn_boids)
             .add_system(check_player)
             .add_system(player_control)
             .add_system(vector_motion)
-            .add_system(wrap_screen_edge);
+            .add_system(wrap_screen_edge)
+            .add_system(boid_attraction);
     }
 }
 
@@ -156,17 +214,13 @@ fn wrap_screen_edge(
     let bottom_bound = window.height() * -0.05;
     for mut transform in transform_query.iter_mut() {
         if transform.translation.x < left_bound {
-            println!("{} < {}", transform.translation.x, left_bound);
             transform.translation.x = right_bound;
         } else if transform.translation.x > right_bound {
-            println!("{} > {}", transform.translation.x, right_bound);
             transform.translation.x = left_bound;
         }
         if transform.translation.y > top_bound {
-            println!("{} > {}", transform.translation.y, top_bound);
             transform.translation.y = bottom_bound;
         } else if transform.translation.y < bottom_bound {
-            println!("{} < {}", transform.translation.y, bottom_bound);
             transform.translation.y = top_bound;
         }
     }
