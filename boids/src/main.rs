@@ -17,6 +17,7 @@ use bevy::prelude::{
     Quat,
     Without,
     Vec3,
+    Vec2,
 };
 use bevy::sprite::SpriteBundle;
 use bevy::time::{ Time, Timer, TimerMode };
@@ -147,7 +148,7 @@ fn diff_angles(angle1: f32, angle2: f32) -> f32 {
 
 fn relative_angle_between(base: Vec3, target: Vec3) -> f32 {
     let relative_position = target - base;
-    relative_position.angle_between(Vec3::Y) * relative_position.x.signum()
+    relative_position.truncate().angle_between(Vec2::Y)
 }
 
 fn check_player(
