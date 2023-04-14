@@ -7,6 +7,7 @@ mod boid_avoidance;
 mod spawn_boids;
 mod boid_jitter;
 mod boid_convergence;
+mod boid_contest;
 
 pub struct Boids;
 
@@ -15,7 +16,8 @@ impl Plugin for Boids {
         app.add_startup_system(spawn_boids::spawn_boids)
             .add_system(boid_avoidance::boid_avoidance)
             .add_system(boid_jitter::boid_jitter)
-            .add_system(boid_convergence::boid_convergence);
+            .add_system(boid_convergence::boid_convergence)
+            .add_system(boid_contest::boid_contest);
     }
 }
 

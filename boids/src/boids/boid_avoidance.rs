@@ -27,10 +27,10 @@ pub fn boid_avoidance(
                 let relative_angle = diff_angles(absolute_angle, vector.direction);
                 if relative_angle.abs() < constants::BOID_VISION_ARC {
                     direction -=
-                        (2.0 - relative_angle.abs() / constants::BOID_VISION_ARC) *
+                        (4.0 - relative_angle.abs() / constants::BOID_VISION_ARC) *
                         relative_angle.signum() *
-                        5.0 *
-                        (1.0 - distance / constants::BOID_VISION_DISTANCE);
+                        4.0 *
+                        (0.75 - distance / constants::BOID_VISION_DISTANCE);
                 }
             }
         }
