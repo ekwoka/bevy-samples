@@ -3,14 +3,19 @@ use bevy::prelude::{ Vec2, Vec3, App, Plugin };
 use crate::RADIAN_MAX;
 
 mod constants;
-pub mod boid_avoidance;
-pub mod spawn_boids;
+mod boid_avoidance;
+mod spawn_boids;
+mod boid_jitter;
+mod boid_convergence;
 
 pub struct Boids;
 
 impl Plugin for Boids {
     fn build(&self, app: &mut App) {
-        app.add_startup_system(spawn_boids::spawn_boids).add_system(boid_avoidance::boid_avoidance);
+        app.add_startup_system(spawn_boids::spawn_boids)
+            .add_system(boid_avoidance::boid_avoidance)
+            .add_system(boid_jitter::boid_jitter)
+            .add_system(boid_convergence::boid_convergence);
     }
 }
 

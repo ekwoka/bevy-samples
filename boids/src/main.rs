@@ -21,6 +21,8 @@ use bevy::sprite::SpriteBundle;
 use bevy::time::{ Time, Timer, TimerMode };
 use bevy::window::{ Window, PrimaryWindow };
 
+mod boids;
+
 fn main() {
     App::new().add_plugins(DefaultPlugins).add_plugin(System).run();
 }
@@ -38,8 +40,6 @@ pub struct Vector {
     direction: f32,
     velocity: f32,
 }
-
-mod boids;
 
 fn setup_env(
     mut commands: Commands,
