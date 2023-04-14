@@ -15,9 +15,9 @@ impl Plugin for Boids {
     fn build(&self, app: &mut App) {
         app.add_startup_system(spawn_boids::spawn_boids)
             .add_system(boid_avoidance::boid_avoidance)
-            .add_system(boid_jitter::boid_jitter)
             .add_system(boid_convergence::boid_convergence)
-            .add_system(boid_contest::boid_contest);
+            .add_system(boid_contest::boid_contest)
+            .add_system(boid_jitter::boid_jitter);
     }
 }
 

@@ -26,7 +26,7 @@ pub fn boid_convergence(
                 );
                 let relative_angle = diff_angles(absolute_angle, vector.direction);
                 if relative_angle.abs() < constants::BOID_VISION_ARC / 2.0 {
-                    let other_direction = other_transform.rotation.z;
+                    let other_direction = other_transform.rotation.z * RADIAN_MAX;
                     let relative_angle = diff_angles(vector.direction, other_direction);
                     direction +=
                         relative_angle.signum() *
