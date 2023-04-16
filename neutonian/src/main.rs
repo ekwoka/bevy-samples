@@ -1,28 +1,18 @@
 use bevy::DefaultPlugins;
 use bevy::ecs::system::Commands;
 use bevy::app::App;
-use bevy::ecs::component::Component;
 use bevy::prelude::*;
 use bevy::window::{ Window, PrimaryWindow };
 
 mod player;
+mod motion;
+mod render;
+use player::PlayerPlugin;
+use motion::MotionPlugin;
+use render::update_sprites;
 
 fn main() {
     App::new().add_plugins(DefaultPlugins).add_plugin(System).run();
-}
-
-#[derive(Resource)]
-struct CheckTimer(Timer);
-
-#[derive(Debug)]
-#[derive(Component)]
-pub struct Player {}
-
-#[derive(Debug)]
-#[derive(Component)]
-pub struct Vector {
-    direction: f32,
-    velocity: f32,
 }
 
 fn setup_camera(mut commands: Commands, window_query: Query<&Window, With<PrimaryWindow>>) {
@@ -36,7 +26,11 @@ pub struct System;
 
 impl Plugin for System {
     fn build(&self, app: &mut App) {
-        app.add_plugin(boids::Boids).add_startup_system(setup_camera).add_system(wrap_screen_edge);
+        app.add_plugin(PlayerPlugin)
+            .add_plugin(MotionPlugin)
+            .add_startup_system(setup_camera)
+            .add_system(wrap_screen_edge)
+            .add_system(update_sprites);
     }
 }
 
