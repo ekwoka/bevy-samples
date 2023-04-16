@@ -1,13 +1,13 @@
-use bevy::prelude::{ Vec2, Vec3, App, Plugin };
+use bevy::prelude::{App, Plugin, Vec2, Vec3};
 
 use crate::RADIAN_MAX;
 
-mod constants;
 mod boid_avoidance;
-mod spawn_boids;
-mod boid_jitter;
-mod boid_convergence;
 mod boid_contest;
+mod boid_convergence;
+mod boid_jitter;
+mod constants;
+mod spawn_boids;
 
 pub struct Boids;
 

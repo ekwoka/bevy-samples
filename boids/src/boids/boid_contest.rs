@@ -1,13 +1,16 @@
-use bevy::{ prelude::{ Transform, Without, Query, Res, Vec3 }, time::Time };
+use bevy::{
+    prelude::{Query, Res, Transform, Vec3, Without},
+    time::Time,
+};
 
-use crate::{ Vector, Player, RADIAN_MAX };
+use crate::{Player, Vector, RADIAN_MAX};
 
-use super::{ diff_angles, constants, relative_angle_between };
+use super::{constants, diff_angles, relative_angle_between};
 
 pub fn boid_contest(
     mut boids: Query<(&mut Vector, &Transform), Without<Player>>,
     other_boids: Query<&Transform, Without<Player>>,
-    time: Res<Time>
+    time: Res<Time>,
 ) {
     for (mut vector, transform) in boids.iter_mut() {
         if transform.translation.x.is_nan() {
@@ -21,10 +24,8 @@ pub fn boid_contest(
             }
             let distance = other_transform.translation.distance(transform.translation);
             if distance < constants::BOID_VISION_DISTANCE {
-                let absolute_angle = relative_angle_between(
-                    transform.translation,
-                    other_transform.translation
-                );
+                let absolute_angle =
+                    relative_angle_between(transform.translation, other_transform.translation);
                 let relative_angle = diff_angles(absolute_angle, vector.direction);
                 if relative_angle.abs() < constants::BOID_VISION_ARC / 2.0 {
                     count += 1;

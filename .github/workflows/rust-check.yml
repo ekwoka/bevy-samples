@@ -17,6 +17,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: install dependencies (ubuntu only)
+        run: |
+          sudo apt-get update
+          sudo apt-get install g++ pkg-config libx11-dev libasound2-dev libudev-dev
+
       - name: Update local toolchain
         run: |
           rustup update
