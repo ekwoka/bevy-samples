@@ -1,18 +1,21 @@
-use bevy::DefaultPlugins;
-use bevy::ecs::system::Commands;
 use bevy::app::App;
+use bevy::ecs::system::Commands;
 use bevy::prelude::*;
-use bevy::window::{ Window, PrimaryWindow };
+use bevy::window::{PrimaryWindow, Window};
+use bevy::DefaultPlugins;
 
-mod player;
 mod motion;
+mod player;
 mod render;
-use player::PlayerPlugin;
 use motion::MotionPlugin;
+use player::PlayerPlugin;
 use render::update_sprites;
 
 fn main() {
-    App::new().add_plugins(DefaultPlugins).add_plugin(System).run();
+    App::new()
+        .add_plugins(DefaultPlugins)
+        .add_plugin(System)
+        .run();
 }
 
 fn setup_camera(mut commands: Commands, window_query: Query<&Window, With<PrimaryWindow>>) {
@@ -36,7 +39,7 @@ impl Plugin for System {
 
 fn wrap_screen_edge(
     mut transform_query: Query<&mut Transform>,
-    window_query: Query<&Window, With<PrimaryWindow>>
+    window_query: Query<&Window, With<PrimaryWindow>>,
 ) {
     let window = window_query.get_single().unwrap();
     let left_bound = window.width() * -0.05;
