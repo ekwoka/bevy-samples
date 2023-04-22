@@ -12,16 +12,15 @@ pub fn boid_contest(
     other_boids: Query<&Transform, Without<Player>>,
     time: Res<Time>,
 ) {
-    for (mut vector, transform) in boids.iter_mut() {
-        if transform.translation.x.is_nan() {
-            continue;
-        }
+    for (mut vector, transform) in boids
+        .iter_mut()
+        .filter(|(_, transform)| !transform.translation.x.is_nan())
+    {
         let mut target: Vec3 = Vec3::default();
         let mut count = 0;
-        for other_transform in other_boids.iter() {
-            if transform == other_transform || other_transform.translation.x.is_nan() {
-                continue;
-            }
+        for other_transform in other_boids.iter().filter(|other_transform| {
+            transform != *other_transform && !other_transform.translation.x.is_nan()
+        }) {
             let distance = other_transform.translation.distance(transform.translation);
             if distance < constants::BOID_VISION_DISTANCE {
                 let absolute_angle =
@@ -36,8 +35,7 @@ pub fn boid_contest(
         if count == 0 {
             continue;
         }
-        target =
-            target / Vec3::from([count as f32, count as f32, count as f32]) + transform.translation;
+        target = target / count as f32 + transform.translation;
         let absolute_angle = relative_angle_between(transform.translation, target);
         let relative_angle = diff_angles(absolute_angle, vector.direction);
         vector.direction += 20.0 * relative_angle * time.delta_seconds();
