@@ -11,5 +11,5 @@ pub const RADIAN_MAX: f32 = (360.0 * std::f32::consts::PI) / 180.0;
 pub struct MotionPlugin;
 
 impl Plugin for MotionPlugin {
-    fn build(&self, app: &mut App) {}
+    fn build(&self, _app: &mut App) {}
 }
