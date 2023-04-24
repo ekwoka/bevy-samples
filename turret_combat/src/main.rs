@@ -4,9 +4,11 @@ use bevy::prelude::*;
 use bevy::window::{PrimaryWindow, Window};
 use bevy::DefaultPlugins;
 
+mod combat;
 mod motion;
 mod player;
 mod render;
+use combat::CombatPlugin;
 use motion::MotionPlugin;
 use player::PlayerPlugin;
 use render::update_sprites;
@@ -31,6 +33,7 @@ impl Plugin for System {
     fn build(&self, app: &mut App) {
         app.add_plugin(PlayerPlugin)
             .add_plugin(MotionPlugin)
+            .add_plugin(CombatPlugin)
             .add_startup_system(setup_camera)
             .add_system(wrap_screen_edge)
             .add_system(update_sprites);

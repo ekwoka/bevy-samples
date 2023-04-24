@@ -29,12 +29,10 @@ fn spawn_player(
         MotionCharacteristics {
             vector: Vec3::new(0.0, 0.0, 0.0),
             direction: 0.0,
-            mass: 1000,
+            mass: 0.5,
         },
     ));
 }
-
-const PLAYER_ACCEL: f32 = 480.0;
 
 fn player_controls(
     keyboard_input: Res<Input<KeyCode>>,
@@ -42,17 +40,8 @@ fn player_controls(
     time: Res<Time>,
 ) {
     let mut motion = player_motion.single_mut();
-    let mut vector = motion.vector;
     let mut direction: f32 = 0.0;
-    let rotation_mod = 10.0 * (motion.mass as f32);
-    if keyboard_input.pressed(KeyCode::Up) {
-        vector += Vec3::new(
-            -PLAYER_ACCEL * time.delta_seconds() * motion.direction.sin() * (motion.mass as f32),
-            PLAYER_ACCEL * time.delta_seconds() * motion.direction.cos() * (motion.mass as f32),
-            0.0,
-        );
-    }
-    if keyboard_input.pressed(KeyCode::Down) {}
+    let rotation_mod = 10.0 * motion.mass;
     if keyboard_input.pressed(KeyCode::Left) {
         direction += rotation_mod * time.delta_seconds();
     }
@@ -61,5 +50,4 @@ fn player_controls(
     }
     motion.direction += direction;
     motion.direction %= crate::motion::RADIAN_MAX;
-    motion.vector = vector;
 }
