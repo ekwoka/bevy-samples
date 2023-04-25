@@ -7,45 +7,38 @@ pub struct CombatPlugin;
 
 impl Plugin for CombatPlugin {
     fn build(&self, app: &mut App) {
-        app.insert_resource(SpawnTimer(Timer::from_seconds(1.0, TimerMode::Repeating)))
-            .add_system(spawn_asteroids);
+        app.add_system(spawn_asteroids.in_schedule(CoreSchedule::FixedUpdate))
+            .insert_resource(FixedTime::new_from_secs(0.5));
     }
 }
 
-#[derive(Resource)]
-struct SpawnTimer(Timer);
-
 fn spawn_asteroids(
     mut commands: Commands,
-    mut spawn_timer: ResMut<SpawnTimer>,
     window: Query<&Window, With<PrimaryWindow>>,
     asset_server: Res<AssetServer>,
-    time: Res<Time>,
 ) {
-    if spawn_timer.0.tick(time.delta()).just_finished() {
-        let window = window.get_single().expect("Window cannot be undefined");
-        let motion_vector = random_vector() * (random::<f32>() * (80.0 + 40.0));
-        let position_vector = screen_edge_at_angle(
-            random::<f32>() * motion::RADIAN_MAX,
-            window.width(),
-            window.height(),
-        );
+    let window = window.get_single().expect("Window cannot be undefined");
+    let motion_vector = random_vector() * (random::<f32>() * (80.0 + 40.0));
+    let position_vector = screen_edge_at_angle(
+        random::<f32>() * motion::RADIAN_MAX,
+        window.width(),
+        window.height(),
+    );
 
-        commands.spawn((
-            SpriteBundle {
-                transform: Transform::from_translation(position_vector)
-                    .with_scale([0.25, 0.25, 1.0].into()),
-                texture: asset_server
-                    .load("sprites/kenney_simple-space/PNG/Retina/meteor_detailedSmall.png"),
-                ..Default::default()
-            },
-            motion::MotionCharacteristics {
-                vector: motion_vector,
-                direction: random::<f32>() * motion::RADIAN_MAX,
-                mass: 0.5,
-            },
-        ));
-    }
+    commands.spawn((
+        SpriteBundle {
+            transform: Transform::from_translation(position_vector)
+                .with_scale([0.25, 0.25, 1.0].into()),
+            texture: asset_server
+                .load("sprites/kenney_simple-space/PNG/Retina/meteor_detailedSmall.png"),
+            ..Default::default()
+        },
+        motion::MotionCharacteristics {
+            vector: motion_vector,
+            direction: random::<f32>() * motion::RADIAN_MAX,
+            mass: 0.5,
+        },
+    ));
 }
 
 fn random_vector() -> Vec3 {
