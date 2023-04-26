@@ -1,7 +1,5 @@
 name: CI
 
-# This workflow run tests and build for each push
-
 on:
   push:
     branches:
@@ -12,9 +10,6 @@ on:
 
 jobs:
   test_apps:
-    strategy:
-      matrix:
-        project: ['boids', 'neutonian']
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -35,19 +30,11 @@ jobs:
           workspaces: ${{ matrix.project }} -> target
           key: ${{ matrix.project }}
 
-      - name: Toolchain info
-        run: |
-          cargo --version --verbose
-          rustc --version
-          cargo clippy --version
-
       - name: Lint
         run: |
-          cd ${{ matrix.project }}
           cargo fmt -- --check
           cargo clippy -- -D warnings
 
       - name: Test
         run: |
-          cd ${{ matrix.project }}
-          cargo check
+          cargo test
