@@ -26,15 +26,12 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
         name: Setup Cargo cache
-        with:
-          workspaces: ${{ matrix.project }} -> target
-          key: ${{ matrix.project }}
 
       - name: Lint
         run: |
-          cargo fmt -- --check
-          cargo clippy -- -D warnings
+          cargo fmt --profile ci -- --check
+          cargo clippy --profile ci -- -D warnings
 
       - name: Test
         run: |
-          cargo test
+          cargo test --profile ci
