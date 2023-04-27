@@ -1,5 +1,5 @@
 [workspace]
-members = ["boids","neutonian"]
+members = ["boids","neutonian", "turret_combat"]
 resolver = "2"
 
 [profile.release]
