@@ -29,7 +29,7 @@ jobs:
 
       - name: Lint
         run: |
-          cargo fmt --profile ci -- --check
+          cargo fmt -- --check
           cargo clippy --profile ci -- -D warnings
 
       - name: Test
