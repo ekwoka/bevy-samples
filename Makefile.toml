@@ -1,0 +1,18 @@
+[tasks.boids]
+script = "cargo run --bin boids-example"
+dependencies = ["clippy", "test", "fmt"]
+
+[tasks.neutonian]
+script = "cargo run --bin neutonian"
+dependencies = ["clippy", "test", "fmt"]
+
+[tasks.turret]
+script = "cargo run --bin turret-combat"
+dependencies = ["clippy", "test", "fmt"]
+
+[tasks.build-all]
+script = "cargo build --release"
+dependencies = ["clippy", "test", "fmt"]
+
+[tasks.fmt]
+script = "cargo fmt"

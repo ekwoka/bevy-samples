@@ -1,5 +1,5 @@
 [package]
-name = "boids-example"
+name = "turret-combat"
 version = "0.1.0"
 edition = "2021"
 
@@ -16,5 +16,5 @@ bevy = { version = "0.10.1" , default-features = false, features = [
             "ktx2",
             "png",
             "zstd"
-          ]}
+          ] }
 rand = { version = "0.8.5" }
