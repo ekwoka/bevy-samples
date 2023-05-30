@@ -7,7 +7,7 @@ script = "cargo run --bin neutonian"
 dependencies = ["clippy", "test", "fmt"]
 
 [tasks.turret]
-script = "cargo run --bin turret_combat"
+script = "cargo run --bin turret-combat"
 dependencies = ["clippy", "test", "fmt"]
 
 [tasks.build-all]
